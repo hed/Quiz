@@ -4,7 +4,6 @@
  * Created on Sep 26, 2009, 7:21:27 PM
  */
 
-
 package quiz;
 
 import javafx.stage.Stage;
@@ -68,7 +67,7 @@ var scaledBackground = Group{
 // Fetch the blue sircle from the background image and add fade effect
 var blueWheel = mainNode.lookup("hei2");
 FadeTransition {
-        node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
+    node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
 }.play();
 
 
@@ -78,36 +77,33 @@ var currentQuestion: Question;
 
 // The timeline that gets the next question and displays it
 var questionTimeline = Timeline {
-        repeatCount: sizeof(AllQuestions.questions)
-        keyFrames : [
-                KeyFrame {
-                        time: Duration.valueOf(questionTime)
-                        canSkip : false
-                        action: function() {
-                            questionIndex++;
-                            currentQuestion = AllQuestions.questions[questionIndex];
-                            duration = width;
-                            durationTimeline.playFromStart();
+    repeatCount: sizeof(AllQuestions.questions)
+    keyFrames : [
+        KeyFrame {
+            time: Duration.valueOf(questionTime)
+            canSkip : false
+            action: function() {
+                questionIndex++;
+                currentQuestion = AllQuestions.questions[questionIndex];
+                duration = width;
+                durationTimeline.playFromStart();
 
-                            if (currentQuestion.sound.length != 0) {
-                                MediaPlayer {
-                                    media: Media {
-                                        source: currentQuestion.sound
-
-                                    }
-                                }.play();
-                            }
-
-                            if (currentQuestion.picture != null) {
-                                currentImage = currentQuestion.picture
-                            } else{
-                                currentImage = null;
-                            }
-
-
+                if (currentQuestion.sound.length != 0) {
+                    MediaPlayer {
+                        media: Media {
+                            source: currentQuestion.sound
                         }
+                    }.play();
                 }
-        ]
+
+                if (currentQuestion.picture != null) {
+                    currentImage = currentQuestion.picture
+                } else{
+                    currentImage = null;
+                }
+            }
+        }
+    ]
 }
 
 // The image if any for the question
@@ -125,42 +121,41 @@ function startQuiz() {
 
 // The timeline that animates the time left on the current question
 var durationTimeline = Timeline {
-        repeatCount: questionTime
-        keyFrames : [
-                KeyFrame {
-                        time : 5ms
-                        canSkip : false
-                        action: function() {
-                            duration = duration - step;
-                        }
-                }
-        ]
+    repeatCount: questionTime
+    keyFrames : [
+        KeyFrame {
+            time : 5ms
+            canSkip : false
+            action: function() {
+                duration = duration - step;
+            }
+        }
+    ]
 }
-
 
 // The question text
 var text = Text {
-                font : Font {
-                    size : 56
-                }
-                fill: Color.BLACK
-                x: 80
-                y: 100
-                textOrigin: TextOrigin.TOP
-                wrappingWidth: width - 160
-                content: bind currentQuestion.question
-            }
+    font : Font {
+        size : 56
+    }
+    fill: Color.BLACK
+    x: 80
+    y: 100
+    textOrigin: TextOrigin.TOP
+    wrappingWidth: width - 160
+    content: bind currentQuestion.question
+}
 
 // The background for the question text
 var questionBackground = Rectangle {
-        x: bind text.x - 5
-        y: bind text.y - 5
-        height: bind text.x + 200
-        width: bind text.wrappingWidth
-        arcHeight: 50 arcWidth: 50
-        fill: Color.WHITESMOKE
-        opacity: 0.7
-    }
+    x: bind text.x - 5
+    y: bind text.y - 5
+    height: bind text.x + 200
+    width: bind text.wrappingWidth
+    arcHeight: 50 arcWidth: 50
+    fill: Color.WHITESMOKE
+    opacity: 0.7
+}
 
 // Helpers to calculate the duration timeline
 var duration = width;
@@ -191,20 +186,15 @@ var timeline = Rectangle {
                color: Color.DARKRED
                offset: 1.0
            },
-
        ]
    }
-
 }
 
 // The stage an scene with the content
-
 var stage:Stage = Stage {
-    
-  fullScreen: true
+    fullScreen: true
 
-  scene: Scene {
-
+    scene: Scene {
         content: [
             scaledBackground,
             questionBackground,
@@ -212,8 +202,6 @@ var stage:Stage = Stage {
             text,            
             timeline
         ]
-
     }
-
 }
 
