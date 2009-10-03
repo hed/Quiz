@@ -17,44 +17,66 @@ import javafx.scene.Node;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import quiz.AllQuestions;
-
 import javafx.animation.transition.FadeTransition;
-import javafx.scene.effect.Lighting;
-
 import javafx.scene.shape.Rectangle;
-
 import javafx.scene.text.TextOrigin;
-
-
 import javafx.scene.paint.Stop;
-
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import javafx.scene.Group;
+import javafx.scene.transform.Scale;
+import javafx.scene.input.MouseEvent;
 
 /**
  * @author hed
  */
 
-var backgroundImage = FXDLoader.loadContent("{__DIR__}res/stage.fxz");
-var mainNode:Node =  Duplicator.duplicate(backgroundImage.getNode("hei"));
-var blueWheel = mainNode.lookup("hei2");
-
-var height:Float = 600;
-var width:Float = 1000;
-
+// The duration of one question in milliseconds
 def questionTime = 30000;
 
+// The heigh and width of the screen
+var height = javafx.stage.Screen.primary.bounds.height;
+var width = javafx.stage.Screen.primary.bounds.width;
+
+// The background image
+var backgroundImage = FXDLoader.loadContent("{__DIR__}res/stage.fxz");
+var mainNode:Node =  Duplicator.duplicate(backgroundImage.getNode("hei"));
+
+// Starts the quiz when the mouse is clicked.
+mainNode.onMouseClicked = function( e: MouseEvent ):Void {
+    startQuiz();
+}
+        
+
+// Make the background image fit the screen
+var scaledBackground = Group{
+    content: [mainNode]
+    transforms: [
+        Scale {
+            pivotX:0
+            pivotY:0
+            x:width / mainNode.boundsInLocal.width
+            y:height / mainNode.boundsInLocal.height
+        }
+    ]
+}
+
+// Fetch the blue sircle from the background image and add fade effect
+var blueWheel = mainNode.lookup("hei2");
 FadeTransition {
         node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
 }.play();
 
 
-
-var currentQuestion: Question = AllQuestions.questions[0];
-
+// The question currently displayed
 var questionIndex = 0 ;
+var currentQuestion: Question; 
 
-
-Timeline {
+// The timeline that gets the next question and displays it
+var questionTimeline = Timeline {
         repeatCount: sizeof(AllQuestions.questions)
         keyFrames : [
                 KeyFrame {
@@ -65,11 +87,42 @@ Timeline {
                             currentQuestion = AllQuestions.questions[questionIndex];
                             duration = width;
                             durationTimeline.playFromStart();
+
+                            if (currentQuestion.sound.length != 0) {
+                                MediaPlayer {
+                                    media: Media {
+                                        source: currentQuestion.sound
+
+                                    }
+                                }.play();
+                            }
+
+                            if (currentQuestion.picture != null) {
+                                currentImage = currentQuestion.picture
+                            } else{
+                                currentImage = null;
+                            }
+
+
                         }
                 }
         ]
-}.play();
+}
 
+// The image if any for the question
+var currentImage: Image;
+var image = ImageView {
+    image: bind currentImage;
+}
+
+// Starts the quiz
+function startQuiz() {
+    questionTimeline.play();
+    durationTimeline.play();
+    currentQuestion = AllQuestions.questions[questionIndex];
+}
+
+// The timeline that animates the time left on the current question
 var durationTimeline = Timeline {
         repeatCount: questionTime
         keyFrames : [
@@ -83,16 +136,8 @@ var durationTimeline = Timeline {
         ]
 }
 
-durationTimeline.play();
 
-
-var light= Lighting {
-        diffuseConstant: 1.0
-        specularConstant: 1.0
-        specularExponent: 20
-        surfaceScale: 1.5
-}
-
+// The question text
 var text = Text {
                 font : Font {
                     size : 56
@@ -105,7 +150,7 @@ var text = Text {
                 content: bind currentQuestion.question
             }
 
-
+// The background for the question text
 var questionBackground = Rectangle {
         x: bind text.x - 5
         y: bind text.y - 5
@@ -116,9 +161,11 @@ var questionBackground = Rectangle {
         opacity: 0.7
     }
 
+// Helpers to calculate the duration timeline
 var duration = width;
 def step = width/questionTime *5 ;
 
+// The timeline that shows how much time is left for the current question
 var timeline = Rectangle {
     x: 0
     y: 0
@@ -149,20 +196,22 @@ var timeline = Rectangle {
 
 }
 
+// The stage an scene with the content
 
-var stage = Stage {
+var stage:Stage = Stage {
     
-  //  fullScreen: true
-  height: height
-  width: width
+  fullScreen: true
 
   scene: Scene {
 
         content: [
-            mainNode,            
+            scaledBackground,
             questionBackground,
-            text,
+            image,
+            text,            
             timeline
         ]
+
     }
+
 }

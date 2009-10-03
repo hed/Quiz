@@ -6,6 +6,8 @@
 
 package quiz;
 
+import javafx.scene.image.Image;
+
 /**
  * Holds information of a question.
  * @author hed
@@ -14,7 +16,7 @@ package quiz;
 public class Question {
 
 public var question : String;
-public var picture: String;
+public var picture: Image;
 public var sound: String;
 
 }
