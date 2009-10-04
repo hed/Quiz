@@ -35,7 +35,7 @@ import javafx.scene.input.MouseEvent;
  */
 
 // The duration of one question in milliseconds
-def questionTime = 30000;
+def questionTime = 5000;
 
 // The heigh and width of the screen
 var height = javafx.stage.Screen.primary.bounds.height;
@@ -69,7 +69,14 @@ var blueWheel = mainNode.lookup("hei2");
 FadeTransition {
     node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
 }.play();
-
+var yellowWheel = mainNode.lookup("hei1");
+FadeTransition {
+    node: yellowWheel  duration: 10s fromValue:0.9 toValue: 0.2 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+}.play();
+var redWheel = mainNode.lookup("hei3");
+FadeTransition {
+    node: redWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+}.play();
 
 // The question currently displayed
 var questionIndex = 0 ;
@@ -91,7 +98,8 @@ var questionTimeline = Timeline {
                 playSound();
 
                 if (currentQuestion.picture != null) {
-                    currentImage = currentQuestion.picture
+                    currentImage = currentQuestion.picture;
+                    image.x = (width / 2) - (currentImage.width / 2);
                 } else{
                     currentImage = null;
                 }
@@ -109,13 +117,6 @@ function playSound() {
             }
         }.play();
     }
-}
-
-
-// The image if any for the question
-var currentImage: Image;
-var image = ImageView {
-    image: bind currentImage;
 }
 
 // Starts the quiz
@@ -161,6 +162,13 @@ var questionBackground = Rectangle {
     arcHeight: 50 arcWidth: 50
     fill: Color.WHITESMOKE
     opacity: 0.7
+}
+
+// The image if any for the question
+var currentImage: Image;
+var image = ImageView {
+    image: bind currentImage;
+    y: questionBackground.y + questionBackground.height + 3;
 }
 
 // Helpers to calculate the duration timeline
