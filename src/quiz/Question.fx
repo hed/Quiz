@@ -18,5 +18,7 @@ public class Question {
 public var question : String;
 public var picture: Image;
 public var sound: String;
+public var category: String;
+public var answer: String;
 
 }
