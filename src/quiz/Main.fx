@@ -35,7 +35,7 @@ import javafx.scene.input.MouseEvent;
  */
 
 // The duration of one question in milliseconds
-def questionTime = 5000;
+def questionTime = 30000;
 
 // The heigh and width of the screen
 var height = javafx.stage.Screen.primary.bounds.height;
@@ -85,6 +85,8 @@ var currentQuestion: Question;
 // The timeline that gets the next question and displays it
 var questionTimeline = Timeline {
     repeatCount: sizeof(AllQuestions.questions)
+    var myCounter = 0;
+    var isSoundPlayed = false;
     keyFrames : [
         KeyFrame {
             time: Duration.valueOf(questionTime)
@@ -95,8 +97,7 @@ var questionTimeline = Timeline {
                 duration = width;
                 durationTimeline.playFromStart();
 
-                playSound();
-
+                isSoundPlayed = false;
                 if (currentQuestion.picture != null) {
                     currentImage = currentQuestion.picture;
                     image.x = (width / 2) - (currentImage.width / 2);
@@ -105,18 +106,35 @@ var questionTimeline = Timeline {
                 }
             }
         }
+        // extra keyframe for playing sounds with a delay
+        KeyFrame {
+            time: Duration.valueOf(questionTime) / 10
+            canSkip : false
+            action: function() {
+                if (currentQuestion.sound.length != 0) {
+                    if (isSoundPlayed == false) {
+                        if (myCounter mod 1 == 0) {
+                            playSound();
+                            isSoundPlayed = true;
+                        }
+                    }
+                }
+            }
+
+        }
     ]
 }
 
+//var player:QuizMediaplayer = new QuizMediaplayer();
 // Plays the sound of the current question if any
 function playSound() {
-    if (currentQuestion.sound.length != 0) {
+//        player.source = currentQuestion.sound;
+//        player.playSound.playFromStart();
         MediaPlayer {
             media: Media {
                 source: currentQuestion.sound
             }
         }.play();
-    }
 }
 
 // Starts the quiz
@@ -132,7 +150,6 @@ var durationTimeline = Timeline {
     keyFrames : [
         KeyFrame {
             time : 5ms
-            canSkip : false
             action: function() {
                 duration = duration - step;
             }
