@@ -88,13 +88,7 @@ var questionTimeline = Timeline {
                 duration = width;
                 durationTimeline.playFromStart();
 
-                if (currentQuestion.sound.length != 0) {
-                    MediaPlayer {
-                        media: Media {
-                            source: currentQuestion.sound
-                        }
-                    }.play();
-                }
+                playSound();
 
                 if (currentQuestion.picture != null) {
                     currentImage = currentQuestion.picture
@@ -105,6 +99,18 @@ var questionTimeline = Timeline {
         }
     ]
 }
+
+// Plays the sound of the current question if any
+function playSound() {
+    if (currentQuestion.sound.length != 0) {
+        MediaPlayer {
+            media: Media {
+                source: currentQuestion.sound
+            }
+        }.play();
+    }
+}
+
 
 // The image if any for the question
 var currentImage: Image;
