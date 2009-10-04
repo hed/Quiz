@@ -90,11 +90,7 @@ var questionTimeline = Timeline {
 
                 playSound();
 
-                if (currentQuestion.picture != null) {
-                    currentImage = currentQuestion.picture
-                } else{
-                    currentImage = null;
-                }
+                showImage();
             }
         }
     ]
@@ -108,6 +104,15 @@ function playSound() {
                 source: currentQuestion.sound
             }
         }.play();
+    }
+}
+
+// Displays the image of the current question if any
+function showImage() {
+    if (currentQuestion.picture != null) {
+        currentImage = currentQuestion.picture
+    } else{
+        currentImage = null;
     }
 }
 
