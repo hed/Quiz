@@ -41,42 +41,91 @@ def questionTime = 30000;
 var height = javafx.stage.Screen.primary.bounds.height;
 var width = javafx.stage.Screen.primary.bounds.width;
 
+
+
+
 // The background image
-var backgroundImage = FXDLoader.loadContent("{__DIR__}res/stage.fxz");
-var mainNode:Node =  Duplicator.duplicate(backgroundImage.getNode("hei"));
+var blueWheel = FXDLoader.loadContent("{__DIR__}res/BlueLight.fxz");
+FadeTransition {
+    node: blueWheel.getNode("blue")  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
+}.play();
+//var yellowWheel = mainNode.lookup("hei1");
+//FadeTransition {
+//    node: yellowWheel  duration: 10s fromValue:0.9 toValue: 0.2 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+//}.play();
+//var redWheel = mainNode.lookup("hei3");
+//FadeTransition {
+//    node: redWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+//}.play();
 
-// Starts the quiz when the mouse is clicked.
-mainNode.onMouseClicked = function( e: MouseEvent ):Void {
-    startQuiz();
+//var backgroundImage = FXDLoader.loadContent("{__DIR__}res/stage.fxz");
+var backgroundImage = ImageView {
+    image: Image
+        { url: "{__DIR__}res/stageBackground.png" }
+    x: 0
+    y: 0
 }
-        
-
-// Make the background image fit the screen
+var backgroundFrontImage = ImageView {
+    image: Image
+        { url: "{__DIR__}res/stageFront.png" }
+    x: 0
+    y: 0
+}
 var scaledBackground = Group{
-    content: [mainNode]
+    content: [
+        backgroundImage,
+        blueWheel.getNode("blue"),
+        backgroundFrontImage
+    ]
     transforms: [
         Scale {
             pivotX:0
             pivotY:0
-            x:width / mainNode.boundsInLocal.width
-            y:height / mainNode.boundsInLocal.height
+            x:width / backgroundImage.boundsInLocal.width
+            y:height / backgroundImage.boundsInLocal.height
         }
     ]
 }
 
+
+//var mainNode:Node =  Duplicator.duplicate(backgroundImage.getNode("hei"));
+
+// Starts the quiz when the mouse is clicked.
+//mainNode.onMouseClicked = function( e: MouseEvent ):Void {
+//    startQuiz();
+//}
+
+
+
+// Make the background image fit the screen
+//var scaledBackground = Group{
+//    content: [mainNode]
+//    transforms: [
+//        Scale {
+//            pivotX:0
+//            pivotY:0
+//            x:width / mainNode.boundsInLocal.width
+//            y:height / mainNode.boundsInLocal.height
+//        }
+//    ]
+//}
+
 // Fetch the blue sircle from the background image and add fade effect
-var blueWheel = mainNode.lookup("hei2");
-FadeTransition {
-    node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
-}.play();
-var yellowWheel = mainNode.lookup("hei1");
-FadeTransition {
-    node: yellowWheel  duration: 10s fromValue:0.9 toValue: 0.2 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
-}.play();
-var redWheel = mainNode.lookup("hei3");
-FadeTransition {
-    node: redWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
-}.play();
+//var blueWheel = mainNode.lookup("hei2");
+//FadeTransition {
+//    node: blueWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE
+//}.play();
+//var yellowWheel = mainNode.lookup("hei1");
+//FadeTransition {
+//    node: yellowWheel  duration: 10s fromValue:0.9 toValue: 0.2 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+//}.play();
+//var redWheel = mainNode.lookup("hei3");
+//FadeTransition {
+//    node: redWheel  duration: 10s fromValue:0.2 toValue: 0.9 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
+//}.play();
+
+
+
 
 // The question currently displayed
 var questionIndex = 0 ;
@@ -230,7 +279,7 @@ var stage:Stage = Stage {
             scaledBackground,
             questionBackground,
             image,
-            text,            
+            text,
             timeline
         ]
     }
