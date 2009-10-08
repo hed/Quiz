@@ -30,6 +30,8 @@ import javafx.scene.transform.Scale;
 import javafx.scene.input.MouseEvent;
 import javafx.animation.transition.RotateTransition;
 
+import java.lang.System;
+
 /**
  * @author hed
  */
@@ -40,6 +42,16 @@ def questionTime = 30000;
 // The heigh and width of the screen
 var height = javafx.stage.Screen.primary.bounds.height;
 var width = javafx.stage.Screen.primary.bounds.width;
+
+// The background sound
+var backgoundSoundPlayer = MediaPlayer {
+    media: Media {
+        source: "{__DIR__}res/proclamation.mp3"
+    }
+}
+
+backgoundSoundPlayer.repeatCount = MediaPlayer.REPEAT_FOREVER;
+backgoundSoundPlayer.volume = 0.5;
 
 // The background image
 var blueLight = FXDLoader.loadContent("{__DIR__}res/BlueLight.fxz");
@@ -135,7 +147,8 @@ var questionTimeline = Timeline {
             time: Duration.valueOf(questionTime) / 10
             canSkip : false
             action: function() {
-                if (currentQuestion.sound.length != 0) {
+                if (currentQuestion.sound.length() != 0) {
+                    System.out.println(currentQuestion.sound.length());
                     if (isSoundPlayed == false) {
                         if (myCounter mod 1 == 0) {
                             playSound();
@@ -151,22 +164,17 @@ var questionTimeline = Timeline {
 
 // Plays the sound of the current question if any
 function playSound() {
-        MediaPlayer {
-            media: Media {
-                source: currentQuestion.sound
-            }
-        }.play();
-}
-
-var backgoundSoundPlayer =
-    MediaPlayer {
-            media: Media {
-                source: "{__DIR__}res/proclamation.mp3"
-            }
+    backgoundSoundPlayer.volume=0;
+    var player = MediaPlayer {
+        media: Media {
+            source: currentQuestion.sound
         }
-backgoundSoundPlayer.repeatCount = MediaPlayer.REPEAT_FOREVER;
-backgoundSoundPlayer.volume = 0.5;
 
+        onEndOfMedia: function () {
+            backgoundSoundPlayer.volume = 0.5;
+        }
+    }.play();
+}
 
 // Starts the quiz
 function startQuiz() {
