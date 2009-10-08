@@ -158,10 +158,21 @@ function playSound() {
         }.play();
 }
 
+var backgoundSoundPlayer =
+    MediaPlayer {
+            media: Media {
+                source: "{__DIR__}res/proclamation.mp3"
+            }
+        }
+backgoundSoundPlayer.repeatCount = MediaPlayer.REPEAT_FOREVER;
+backgoundSoundPlayer.volume = 0.5;
+
+
 // Starts the quiz
 function startQuiz() {
     questionTimeline.play();
     durationTimeline.play();
+    backgoundSoundPlayer.play();
     currentQuestion = AllQuestions.questions[questionIndex];
 }
 
