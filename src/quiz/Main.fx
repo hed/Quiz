@@ -147,8 +147,7 @@ var questionTimeline = Timeline {
             time: Duration.valueOf(questionTime) / 10
             canSkip : false
             action: function() {
-                if (currentQuestion.sound.length() != 0) {
-                    System.out.println(currentQuestion.sound.length());
+                if (currentQuestion.sound.length() != 0) {                    
                     if (isSoundPlayed == false) {
                         if (myCounter mod 1 == 0) {
                             playSound();
