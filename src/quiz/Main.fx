@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.fxd.FXDLoader;
 import javafx.fxd.Duplicator;
 import javafx.scene.text.Text;
-import javafx.scene.Node;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import quiz.AllQuestions;
@@ -29,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.Group;
 import javafx.scene.transform.Scale;
 import javafx.scene.input.MouseEvent;
+import javafx.animation.transition.RotateTransition;
 
 /**
  * @author hed
@@ -52,10 +52,21 @@ var yellowWheel = Duplicator.duplicate(yellowLight.getNode("yellow"));
 FadeTransition {
     node: yellowWheel  duration: 10s fromValue:0.8 toValue: 0.2 autoReverse:true repeatCount: Timeline.INDEFINITE time: 5ms
 }.play();
+
 var redLight = FXDLoader.loadContent("{__DIR__}res/RedLight.fxz");
 var redWheel = Duplicator.duplicate(redLight.getNode("red"));
+
+
+var redWheelGroup = Group {
+    content: [redWheel]
+}
+
 FadeTransition {
-    node: redWheel  duration: 12s fromValue:0.2 toValue: 0.8 autoReverse:true repeatCount: Timeline.INDEFINITE
+    node: redWheelGroup  duration: 12s fromValue:0.2 toValue: 0.8 autoReverse:true repeatCount: Timeline.INDEFINITE
+}.play();
+
+RotateTransition {
+    node: redWheelGroup byAngle: 360 duration: 120s repeatCount: Timeline.INDEFINITE
 }.play();
 
 var backgroundImage = ImageView {
@@ -73,7 +84,7 @@ var backgroundFrontImage = ImageView {
 var scaledBackground = Group {
     content: [
         backgroundImage,
-        redWheel,
+        redWheelGroup,
         blueWheel,
         yellowWheel,
         backgroundFrontImage
